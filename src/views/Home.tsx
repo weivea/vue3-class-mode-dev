@@ -1,19 +1,15 @@
-import { Options, Vue } from 'vue-class-component';
+import { defineComponent } from 'vue';
 import TestTsx from '@/components/TestTsx.tsx'; // @ is an alias to /src
 
-@Options<Home>({
-  render() {
+const Home = defineComponent((props, ctx) => {
+  return () => {
     return (
-      <div class="home" onClick={this.handleClick}>
-        <img alt="Vue logo" src="../assets/logo.png" />
+      <div class="home">
+        <img alt="Vue logo" src={require('../assets/logo.png')} />
         <TestTsx message="Welcome to Your Vue.js + TypeScript App" />
       </div>
     );
-  },
-})
-class Home extends Vue {
-  handleClick() {
-    console.log('aaaa');
-  }
-}
+  };
+});
+
 export default Home;

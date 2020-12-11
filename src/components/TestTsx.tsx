@@ -5,7 +5,7 @@ import {
   Reactive,
   Mounted,
   Updated,
-  InferPropsType,
+  RenderTriggered,
 } from './vueClass';
 
 import { State } from '@/store/index';
@@ -13,12 +13,15 @@ import { useStore } from 'vuex';
 import { useRouter, useRoute } from 'vue-router';
 
 const props = {
-  message: { type: String },
+  message: {
+    type: String,
+    default: function() {
+      return 'Default string';
+    },
+  },
 };
 
-type Props = InferPropsType<typeof props>;
-
-class Test extends Base<Props> {
+class Test extends Base<typeof props> {
   @Ref
   data1 = 2;
 
@@ -52,14 +55,17 @@ class Test extends Base<Props> {
     console.log('bbcnt');
     this.dataObj.bbcnt++;
   }
+
+  @RenderTriggered
   @Mounted
-  handleM1() {
+  handleM1(e?: DebuggerEvent) {
     this.handleM2();
-    console.log('handleM1');
+    console.log('handleM1', e);
   }
+
   @Updated
-  handleM2(e?: DebuggerEvent) {
-    console.log('handleM2', e);
+  handleM2() {
+    console.log('handleM2');
   }
   render() {
     return (

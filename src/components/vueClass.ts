@@ -14,9 +14,6 @@ import {
   onRenderTriggered,
 } from 'vue';
 
-// enum methodKeyCache {
-//   hookMethodKey = Symbol('m')
-// }
 const hookMethodKey = Symbol('m');
 
 /**
@@ -38,9 +35,9 @@ function runBind(
  * 基类
  */
 export class Base<P = any> {
-  declare $props: P;
+  declare $props: InferPropsType<P>;
   declare $ctx: SetupContext<Record<string, any>>;
-  declare [hookMethodKey]?: [
+  declare [hookMethodKey]: [
     keyof this,
     (hook: () => any) => false | Function | undefined,
   ][];
@@ -61,13 +58,12 @@ export class Base<P = any> {
     });
 
     const hooks = this[hookMethodKey];
-    if (hooks) {
-      hooks.forEach(([methodName, bindFun]) =>
-        runBind(this[methodName], this, bindFun),
-      );
-    }
+    hooks.forEach(([methodName, bindFun]) =>
+      runBind(this[methodName], this, bindFun),
+    );
   }
 }
+Base.prototype[hookMethodKey] = [];
 
 /**ref装饰器
  * @param target
@@ -110,9 +106,7 @@ export function Reactive(target: any, name: string | number | symbol): any {
  * @param propertyKey
  */
 export function BeforeMount(target: any, propertyKey: keyof any) {
-  target[hookMethodKey]
-    ? target[hookMethodKey]?.push([propertyKey, onBeforeMount])
-    : (target[hookMethodKey] = [[propertyKey, onBeforeMount]]);
+  target[hookMethodKey].push([propertyKey, onBeforeMount]);
 }
 
 /** onMounnted装饰器
@@ -120,9 +114,7 @@ export function BeforeMount(target: any, propertyKey: keyof any) {
  * @param propertyKey
  */
 export function Mounted(target: any, propertyKey: keyof any) {
-  target[hookMethodKey]
-    ? target[hookMethodKey]?.push([propertyKey, onMounted])
-    : (target[hookMethodKey] = [[propertyKey, onMounted]]);
+  target[hookMethodKey]?.push([propertyKey, onMounted]);
 }
 
 /** onUpdated装饰器
@@ -130,9 +122,7 @@ export function Mounted(target: any, propertyKey: keyof any) {
  * @param propertyKey
  */
 export function Updated(target: any, propertyKey: keyof any) {
-  target[hookMethodKey]
-    ? target[hookMethodKey]?.push([propertyKey, onUpdated])
-    : (target[hookMethodKey] = [[propertyKey, onUpdated]]);
+  target[hookMethodKey]?.push([propertyKey, onUpdated]);
 }
 
 /** onBeforeUpdate 装饰器
@@ -140,9 +130,7 @@ export function Updated(target: any, propertyKey: keyof any) {
  * @param propertyKey
  */
 export function BeforeUpdate(target: any, propertyKey: keyof any) {
-  target[hookMethodKey]
-    ? target[hookMethodKey]?.push([propertyKey, onBeforeUpdate])
-    : (target[hookMethodKey] = [[propertyKey, onBeforeUpdate]]);
+  target[hookMethodKey]?.push([propertyKey, onBeforeUpdate]);
 }
 
 /** onBeforeUnmount 装饰器
@@ -150,43 +138,33 @@ export function BeforeUpdate(target: any, propertyKey: keyof any) {
  * @param propertyKey
  */
 export function BeforeUnmount(target: any, propertyKey: keyof any) {
-  target[hookMethodKey]
-    ? target[hookMethodKey]?.push([propertyKey, onBeforeUnmount])
-    : (target[hookMethodKey] = [[propertyKey, onBeforeUnmount]]);
+  target[hookMethodKey]?.push([propertyKey, onBeforeUnmount]);
 }
 /** onUnmounted 装饰器
  * @param target
  * @param propertyKey
  */
 export function Unmounted(target: any, propertyKey: keyof any) {
-  target[hookMethodKey]
-    ? target[hookMethodKey]?.push([propertyKey, onUnmounted])
-    : (target[hookMethodKey] = [[propertyKey, onUnmounted]]);
+  target[hookMethodKey]?.push([propertyKey, onUnmounted]);
 }
 /** onErrorCaptured 装饰器
  * @param target
  * @param propertyKey
  */
 export function ErrorCaptured(target: any, propertyKey: keyof any) {
-  target[hookMethodKey]
-    ? target[hookMethodKey]?.push([propertyKey, onErrorCaptured])
-    : (target[hookMethodKey] = [[propertyKey, onErrorCaptured]]);
+  target[hookMethodKey]?.push([propertyKey, onErrorCaptured]);
 }
 /** onRenderTracked 装饰器
  * @param target
  * @param propertyKey
  */
 export function RenderTracked(target: any, propertyKey: keyof any) {
-  target[hookMethodKey]
-    ? target[hookMethodKey]?.push([propertyKey, onRenderTracked])
-    : (target[hookMethodKey] = [[propertyKey, onRenderTracked]]);
+  target[hookMethodKey]?.push([propertyKey, onRenderTracked]);
 }
 /** onRenderTriggered 装饰器
  * @param target
  * @param propertyKey
  */
 export function RenderTriggered(target: any, propertyKey: keyof any) {
-  target[hookMethodKey]
-    ? target[hookMethodKey]?.push([propertyKey, onRenderTriggered])
-    : (target[hookMethodKey] = [[propertyKey, onRenderTriggered]]);
+  target[hookMethodKey]?.push([propertyKey, onRenderTriggered]);
 }
