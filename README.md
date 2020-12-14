@@ -1,6 +1,7 @@
 # vue3-class-mode-dev
 
-本项目是基于 vue3 以自定义 class的模式来开发的尝试；
+本项目是基于 vue3 以自定义 class的模式来开发的尝试(并非使用vue-class-component)；
+
 使用typescript + tsx 开发
 感觉不错
 
