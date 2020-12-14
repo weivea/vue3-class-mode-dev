@@ -3,6 +3,7 @@ import {
   ExtractPropTypes,
   reactive,
   ref,
+  getCurrentInstance,
   onMounted,
   onBeforeMount,
   onBeforeUpdate,
@@ -61,6 +62,8 @@ export class Base<P = any> {
     hooks.forEach(([methodName, bindFun]) =>
       runBind(this[methodName], this, bindFun),
     );
+    const v = getCurrentInstance();
+    (v as any).__proto__ = this;
   }
 }
 Base.prototype[hookMethodKey] = [];
@@ -70,14 +73,19 @@ Base.prototype[hookMethodKey] = [];
  * @param name
  */
 export function Ref(target: any, name: string | number | symbol): any {
-  const refValue = ref<any>();
+  const key = Symbol(name.toString());
   const descriptor: PropertyDescriptor = {
     enumerable: true,
     get() {
-      return refValue.value;
+      return (this as any)[key].value;
     },
     set(val: any) {
-      refValue.value = val;
+      const _ref = (this as any)[key];
+      if (_ref) {
+        _ref.value = val;
+      } else {
+        (this as any)[key] = ref(val);
+      }
     },
   };
   return descriptor;
@@ -88,14 +96,14 @@ export function Ref(target: any, name: string | number | symbol): any {
  * @param name
  */
 export function Reactive(target: any, name: string | number | symbol): any {
-  let refValue = reactive<any>({});
+  const key = Symbol(name.toString());
   const descriptor: PropertyDescriptor = {
     enumerable: true,
     get() {
-      return refValue;
+      return (this as any)[key];
     },
     set(val: any) {
-      refValue = reactive<any>(val);
+      (this as any)[key] = reactive(val);
     },
   };
   return descriptor;

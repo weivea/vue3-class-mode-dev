@@ -21,12 +21,12 @@ const props = {
   },
 };
 
-class Test extends Base<typeof props> {
+export class Test extends Base<typeof props> {
   @Ref
-  data1 = 2;
+  private data1 = 2;
 
   @Reactive
-  dataObj = {
+  private dataObj = {
     bbcnt: 12,
   };
 
@@ -65,7 +65,11 @@ class Test extends Base<typeof props> {
 
   @Updated
   handleM2() {
-    console.log('handleM2');
+    console.log('handleM2', this.$props.message);
+  }
+
+  handleM3() {
+    console.log('handleM3', this.$props.message);
   }
   render() {
     return (
